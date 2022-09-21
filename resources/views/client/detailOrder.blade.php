@@ -28,7 +28,7 @@
                     </div>
                 </div>
             </div><br>
-{{--            {{dd($detailOrder[0]->product_id)}}--}}
+{{--            {{dd($detailOrder[0]->id)}}--}}
             {{--            <p>The .table class adds basic styling (light padding and only horizontal dividers) to a table:</p>--}}
 {{--            <h5>Địa chỉ nhận hàng</h5>--}}
 {{--            @foreach(array($detailOrder) as $detail)--}}
@@ -71,19 +71,12 @@
             <h5 style="color: #ff0000;text-align: right;margin-right: 400px"> Coupon: 0$</h5><br>
         @endif
         <h4 style="color: red;text-align: right;margin-right: 400px"> Total: {{$detailOrder[0]->total_pr}}$</h4><br>
-        <form>
-            <div  style="text-align: right;margin-right: 400px">
-                <label>Chọn phương thức thanh toán</label>
-            </div>
-            <div style="text-align: right;margin-right: 400px">
-                <label>Thanh toán bằng tiền mặt</label>
-                <span><input type="checkbox"></span>
-            </div>
-            <div style="text-align: right;margin-right: 400px">
-                <label>Thanh toán bằng chuyển khoản</label>
-                <span><input type="checkbox"></span>
-            </div>
-        </form>
+            <form method="POST" action="{{url('vnp_payment')}}">
+                @csrf
+                <div class="form-group">
+                    <button style="width: 400px; margin-left: 60%" name="redirect" type="submit" class="btn btn-dark btm-md full-width btn btn-info">Thanh Toán VNPAY</button>
+                </div>
+            </form>
 
     </section>
     <!-- ======================= Product Detail End ======================== -->

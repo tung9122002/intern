@@ -147,6 +147,12 @@
                                 <button type="submit" class="btn btn-dark btm-md full-width">Pay</button>
                             </div>
                         </form>
+                        <form action="{{route('payment')}}" method="post">
+                            @csrf
+                            <div class="form-group">
+                                <button type="submit" name="redirect" class="btn btn-dark btm-md full-width">Thanh Toán VNPAY</button>
+                            </div>
+                        </form>
                     </div>
 
                     <!-- Sidebar -->

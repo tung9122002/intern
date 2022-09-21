@@ -20,9 +20,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+// test api
 Route::group(['prefix'=>'auth'],function(){
-    Route::post('register',[AuthController::class,'register']);
-    Route::post('sinhvien',[SinhVienController::class,'sinhvien']);
-    Route::get('index',[SinhVienController::class,'index']);
-    Route::post('role',[RoleController::class,'addRole']);
+    Route::post('register',[\App\Http\Controllers\Api\AuthController::class,'register']);
+    Route::post('sinhvien',[\App\Http\Controllers\Api\StudentController::class,'sinhvien']);
+    Route::get('index',[\App\Http\Controllers\Api\StudentController::class,'index']);
+    Route::post('role',[\App\Http\Controllers\Api\RoleController::class,'addRole']);
 });

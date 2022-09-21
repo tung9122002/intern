@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Models\SinhVien;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
-class SinhVienController extends Controller
+class StudentController extends Controller
 {
     //
     public function sinhvien(Request $request){
@@ -34,5 +34,4 @@ class SinhVienController extends Controller
         $sinhvien=$data->list()->toArray();
         return response()->json($sinhvien);
     }
-
 }

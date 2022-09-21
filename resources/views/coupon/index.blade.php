@@ -17,7 +17,7 @@
 <h3><a href="{{route('khach-hang.index')}}">Thống kê</a></h3>
 <h3><a href="{{route('ship.index')}}">Phí ship</a></h3>
 <a href="{{route('coupon.add_coupon')}}">Thêm Coupon</a><br>
-<a href="{{route('sendMail')}}" class="btn btn-info">Gửi mail khuyễn mãi cho khách hàng</a>
+<a href="{{route('coupon.sendMail')}}" class="btn btn-info">Gửi mail khuyễn mãi cho khách hàng</a>
 <table class="table">
     <tr>
          <th>id</th>

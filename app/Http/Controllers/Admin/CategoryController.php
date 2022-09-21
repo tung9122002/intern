@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\DanhMucRequest;
-use App\Jobs\sendMail;
 use App\Models\DanhMuc;
-use App\Models\SanPham;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class DanhMucController extends Controller
+class CategoryController extends Controller
 {
     //
     public function __construct()
@@ -29,8 +28,8 @@ class DanhMucController extends Controller
         $this->v['title']='Thêm danh mục';
         $obj=new DanhMuc();
         $danhmuc=DB::table('danhmuc_sp')
-        // ->where('danhmuc_cha',0)
-        ->get();
+            // ->where('danhmuc_cha',0)
+            ->get();
         if($request->isMethod('post')){
             $params=$request->post();
             unset($params['_token']);
@@ -55,7 +54,7 @@ class DanhMucController extends Controller
         $obj=new DanhMuc();
         $this->v['delete']=$obj->deleteDm($id);
         $danhmuc = DB::table('danhmuc_sp')
-        ->get();
+            ->get();
         return redirect()->route('danhmuc.index');
     }
     public function edit($id){
@@ -74,16 +73,6 @@ class DanhMucController extends Controller
             $this->v['res']=$obj->updateDm($id,$params);
         }
         return redirect()->route('danhmuc.index');
-    }
-    public function detailCate($id){
-        // $obj=new SanPham();
-        // $list=$obj->list();
-        // foreach($list as $item){
-        //    dd($item->category_track);
-        // }
-        $obj=new DanhMuc();
-        $query=$obj->listProductOfCate($id);
-        return view('danhmuc.detail',$this->v,compact('query'));
     }
     public function TableCategories($categories, $danhmuc_cha = 0, $char ='')
     {
@@ -105,5 +94,4 @@ class DanhMucController extends Controller
         }
         return $result;
     }
-
 }

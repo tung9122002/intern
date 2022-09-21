@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\ProductAttribute;
 use App\Models\SanPham;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use function Symfony\Component\HttpFoundation\Session\Storage\Handler\commit;
 
 class AttributeController extends Controller
 {
@@ -16,16 +16,6 @@ class AttributeController extends Controller
         $objAtt=new SanPham();
         $listAtt=$objAtt->listAtt();
         return view('attribute.index',compact('title','listAtt'));
-    }
-    public function listSku(){
-        $title='Danh sách Sku';
-        $obj=new ProductAttribute();
-        $listSku=$obj->listSku();
-        return view('sku.index',compact('listSku','title'));
-    }
-    public function addSku(Request $request){
-        $title='Thêm giá cho sản phẩm';
-        return view('sku.add',compact('title'));
     }
     public function add(Request $request){
         $value=$request->value;
@@ -51,8 +41,8 @@ class AttributeController extends Controller
                 DB::commit();
             }
             catch (Exception $e){
-            DB::rollBack();
-            throw new Exception($e->getMessage());
+                DB::rollBack();
+                throw new Exception($e->getMessage());
             }
         }
         return view('attribute.add',compact('title'));
