@@ -10,6 +10,7 @@ class SanPham extends Model
 {
     use HasFactory;
     protected $fillable=['product_attributes.price','product_attributes.id_attribute','product_attributes.id_product','product_attribute_value.name','product_attribute_value.value','quanly_sp.id','ten_sp','danhmuc_sp.danhmuc_cha','danhmuc_sp.ten_danhmuc','gia_thitruong','gia_niemyet','mota_ngan','mota_sp','quanly_sp.ngay_tao','quanly_sp.ngay_capnhap','category_track'];
+    // hiển thị tất cả sản phẩm
     public function list(){
         $list=DB::table('quanly_sp')
         ->join('danhmuc_sp','danhmuc_sp.id','=','quanly_sp.id_danhmuc')
@@ -20,6 +21,8 @@ class SanPham extends Model
         ->get();
         return $list;
     }
+
+    // hiển thị tất cả sản phẩm theo id thêm mới nhất
     public function listSp(){
         $listSp=DB::table('quanly_sp')
             ->join('danhmuc_sp','danhmuc_sp.id','=','quanly_sp.id_danhmuc')
@@ -37,18 +40,21 @@ class SanPham extends Model
             ->get();
         return $list;
     }
-
+    // thêm sản phẩm
     public function saveNew($params){
         $query=$params;
         $query=DB::table('quanly_sp')
         ->insertGetId($params);
         return $query;
     }
+    // xóa sản phẩm
     public function deleteSp($id){
         $delete=DB::table('quanly_sp')
         ->delete($id);
         return $delete;
     }
+
+    //truy vấn 1 sản phẩm theo id
     public function loadOne($id){
         $data=DB::table('quanly_sp')
             ->join('danhmuc_sp','danhmuc_sp.id','=','quanly_sp.id_danhmuc')
@@ -59,6 +65,8 @@ class SanPham extends Model
         ->first();
         return $data;
     }
+
+    // cập nhập sản phẩm theo id
     public function updateSp($id,$params=[]){
         $data=$params;
         $res=DB::table('quanly_sp')
@@ -66,10 +74,13 @@ class SanPham extends Model
         ->update($data);
         return $res;
     }
+    //hiển thị tất cả sản phẩm của danh mục đó
     public function listProductOfCate($id_danhmuc){
         $query=DB::select("SELECT * FROM quanly_sp WHERE MATCH(category_track) AGAINST( '$id_danhmuc' IN BOOLEAN MODE )");
         return $query;
     }
+
+    // đẹ quy
     public function TableCategories($categories, $danhmuc_cha = 0, $char ='')
     {
         $result = [];
@@ -89,29 +100,37 @@ class SanPham extends Model
         }
         return $result;
     }
+    // hiển thị tất cả giá trị thuộc tính
     public function listAtt(){
         $query=DB::table('product_attribute_value')
             ->groupBy('name')
             ->get();
         return $query;
     }
+
+    // thêm giá trị thuộc tính
     public function saveNewAtt($params){
         $query=DB::table('product_attribute_value')
             ->insert($params);
 //        dd($params);
         return $query;
     }
+
+    // xóa giá trị thuộc tính
     public function deleteAtt($id){
         $deleteAtt=DB::table('product_attribute_value')
             ->delete($id);
         return $deleteAtt;
     }
+    // hiển thị tất cả màu
     public function listColor(){
         $listColor=DB::table('product_attribute_value')
             ->where('name','color')
             ->get();
         return $listColor;
     }
+
+    // hiển thị tất cả size
     public function listSize(){
         $listSize=DB::table('product_attribute_value')
             ->where('name','size')

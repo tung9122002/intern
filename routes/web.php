@@ -38,9 +38,10 @@ Route::get('list-cart',[\App\Http\Controllers\Client\CartController::class,'list
 Route::get('district',[\App\Http\Controllers\Client\DistrictController::class,'loadDistrict'])->name('district');
 Route::get('att',[\App\Http\Controllers\Admin\ProductController::class,'loadAttribute'])->name('attribute');
 
-
+//hiển thị phí ship
 Route::get('shipping',[\App\Http\Controllers\Client\ShippingFeeController::class,'loadShipping'])->name('shipping');
 
+// client-checkout
 Route::get('check-out',[\App\Http\Controllers\Client\CheckOutController::class,'checkOut'])->name('checkOut');
 Route::post('check-out',[\App\Http\Controllers\Client\CheckOutController::class,'postCheckOut'])->name('postCheckOut');
 
@@ -55,13 +56,13 @@ Route::get('detailOrder/{id}',[\App\Http\Controllers\Client\OrderController::cla
 
 // Client - Detail Poduct
 Route::get('shop-single/{id}',[\App\Http\Controllers\Client\ProductController::class,'shopSingle'])->name('shopSingle');
-Route::get('add-rating',[\App\Http\Controllers\Client\ProductController::class,'addRating'])->name('add_rating');
+Route::get('add-rating',[\App\Http\Controllers\Client\RatingController::class,'addRating'])->name('add_rating');
 // Client - Coupon
 Route::get('check-coupon',[\App\Http\Controllers\Client\CouponController::class,'checkCoupon'])->name('check_coupon');
 
 //client- rating
 Route::get('rating/{id}',[\App\Http\Controllers\Client\RatingController::class,'listRating'])->name('list_rating');
-
+//VNPay
 Route::get('complete-order/{code}',[\App\Http\Controllers\Client\CheckOutController::class,'completeOrder'])->name('complete_order');
 Route::get('IPN',[\App\Http\Controllers\Payment\PaymentController::class,'IPN'])->name('complete_pay');
 Route::get('vnp-return',[\App\Http\Controllers\Payment\PaymentController::class,'resultPay'])->name('result_pay');

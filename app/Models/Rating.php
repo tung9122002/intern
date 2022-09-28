@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 class Rating extends Model
 {
     use HasFactory;
+    // thêm đánh giá sao
     public function saveNew($params){
         $query=DB::table('product_rating')
             ->insertGetId($params);
@@ -22,6 +23,7 @@ class Rating extends Model
             ->paginate(5);
         return $query;
     }
+    // hiển thị tất cả lượt đánh giá
     public function listRating($id){
         $query=DB::table('product_rating')
             ->join('quanly_sp','quanly_sp.id','=','product_rating.product_id')

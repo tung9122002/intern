@@ -14,6 +14,7 @@ class ShippingFeeController extends Controller
         $title='Danh sách Phí ship';
         $obj=new ShippingFee();
         $list=$obj->ShipList();
+//        dd($list);
         return view('shipping.index',compact('title','list'));
     }
     public function add(Request $request){

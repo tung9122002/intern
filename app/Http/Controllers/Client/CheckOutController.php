@@ -104,6 +104,7 @@ class CheckOutController extends Controller
         session()->forget('showCart','total');
         return redirect()->route('complete_order',[$codeOrder]);
     }
+    // đặt hàng thành công
     public function completeOrder(Request $request,$code){
         $obj=new Order();
         $data=$obj->completeOrder($code);

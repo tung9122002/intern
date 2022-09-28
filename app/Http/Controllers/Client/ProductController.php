@@ -46,6 +46,8 @@ class ProductController extends Controller
         return view('client.sanpham',$this->v,compact('listDm','query','cart','total','cate','listSp'));
         // $array=collect($cart);
     }
+
+    // chi tiết sản phẩm
     public function shopSingle($id,Request $request){
         $obj=new SanPham();
         $objAtt=new ProductAttribute();
@@ -57,8 +59,11 @@ class ProductController extends Controller
         // tổng trung bình đánh giá
         $rating=$loadRatingId->avg('rating');
 //        dd($loadRatingId);
+        // hiển thị tất cả màu
         $listColor=$obj->listColor();
+        // hiển thị tất cả size
         $listSize=$obj->listSize();
+        //lấy ra 1 sản phẩm
         $loadOne=$obj->loadOne($id);
         $listAtt=$objAtt->listAtt($id);
 //        dd($listAtt);
@@ -90,16 +95,5 @@ class ProductController extends Controller
             }
         }
         return view('client.shop-single',compact('countRating','rating','loadRatingId','inventory','listAtt','listColor','listSize','loadOne','query','cart','total','min','max'));
-    }
-    public function addRating(Request $request){
-        $params=$request->all();
-        $obj=new Rating();
-        $query=$obj->saveNew($params);
-//        echo "<pre>";
-//        print_r($request->all());
-//        echo "</pre>";
-//        die();
-
-        return response()->json(array('success'=>true,'html'=>$query));
     }
 }

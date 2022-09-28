@@ -9,12 +9,15 @@ use Illuminate\Support\Facades\DB;
 class ShippingFee extends Model
 {
     use HasFactory;
+
+    // truy vấn 1 phí ship theo tỉnh/thành
     public function loadList($id){
         $query=DB::table('shipping_fee')
             ->where('province_id',$id)
             ->first();
         return $query;
     }
+    //hiển thị tất cả phí ship
     public function ShipList(){
         $list=DB::table('shipping_fee')
             ->join('location_province','location_province.id','=','shipping_fee.province_id')
@@ -22,11 +25,14 @@ class ShippingFee extends Model
             ->get();
         return $list;
     }
+
+    // thêm phí ship
     public function saveNew($params){
         $query=DB::table('shipping_fee')
             ->insertGetId($params);
         return $query;
     }
+
     public function loadOne($id,$params=[]){
         $query=DB::table('shipping_fee')
             ->where('id',$id)
