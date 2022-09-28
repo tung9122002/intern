@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RatingRequest;
 use App\Models\DanhMuc;
 use App\Models\ProductAttribute;
+use App\Models\Rating;
 use App\Models\SanPham;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +30,7 @@ class ProductController extends Controller
         // dd($query);
         if(!empty($cart)){
             foreach($cart as $it){
-                $subtotal=($it['gia_thitruong']*$it['so_luong']);
+                $subtotal=((int)$it['gia_thitruong']*(int)$it['so_luong']);
                 $total=($total+$subtotal);
             }
         }
@@ -47,6 +49,14 @@ class ProductController extends Controller
     public function shopSingle($id,Request $request){
         $obj=new SanPham();
         $objAtt=new ProductAttribute();
+        $objRating=new Rating();
+        // panigation 5 đánh giá
+        $loadRatingId=$objRating->loadRatingId($id);
+        // đếm số đánh giá
+        $countRating=$objRating->listRating($id);
+        // tổng trung bình đánh giá
+        $rating=$loadRatingId->avg('rating');
+//        dd($loadRatingId);
         $listColor=$obj->listColor();
         $listSize=$obj->listSize();
         $loadOne=$obj->loadOne($id);
@@ -75,10 +85,21 @@ class ProductController extends Controller
         $total=0;
         if(!empty($cart)){
             foreach($cart as $it){
-                $subtotal=($it['gia_thitruong']*$it['so_luong']);
+               $subtotal=($it['gia_thitruong']*$it['so_luong']);
                 $total=($total+$subtotal);
             }
         }
-        return view('client.shop-single',compact('inventory','listAtt','listColor','listSize','loadOne','query','cart','total','min','max'));
+        return view('client.shop-single',compact('countRating','rating','loadRatingId','inventory','listAtt','listColor','listSize','loadOne','query','cart','total','min','max'));
+    }
+    public function addRating(Request $request){
+        $params=$request->all();
+        $obj=new Rating();
+        $query=$obj->saveNew($params);
+//        echo "<pre>";
+//        print_r($request->all());
+//        echo "</pre>";
+//        die();
+
+        return response()->json(array('success'=>true,'html'=>$query));
     }
 }

@@ -42,6 +42,7 @@
 {{--                        <th>Ngày mua</th>--}}
                         <th>Trạng thái</th>
                         <th>Chi tiết</th>
+                        <th>Thanh toán</th>
                         <th>Hủy đơn hàng</th>
                     </tr>
                     </thead>
@@ -53,11 +54,11 @@
 {{--                        <td>{{$his->ten_sp}}</td>--}}
                         <td>{{$his->address}} - {{$his->name_district}} - {{$his->name_province}}</td>
                         <td>{{$his->quantity}}</td>
-                        <td>{{$his->total}}$</td>
+                        <td>{{$his->total}} VNĐ</td>
 {{--                        <td>{{$his->created_at}}</td>--}}
                         <td>
                             @if($his->trang_thai==0)
-                                <span style="width: 130px" class="btn btn-primary">Chưa duyệt</span>
+                                <span style="width: 130px" class="btn btn-dark">Chưa duyệt</span>
                             @elseif($his->trang_thai==1)
                                 <span style="width: 130px" class="btn btn-success">Đã duyệt</span>
                             @else
@@ -69,7 +70,15 @@
                             <a href="{{route('client_detail_order',[$his->order_id])}}" style="color: white" class="btn btn-info">Xem chi tiết</a>
                         </td>
                         <td>
-                            @if($his->trang_thai==2)
+                            @if($his->paid==0)
+                                <span style="width: 130px" class="btn btn-primary">Chưa thanh toán</span>
+                            @else
+                                <span style="width: 130px" class="btn btn-success">Đã thanh toán</span>
+                            @endif
+
+                        </td>
+                        <td>
+                            @if($his->trang_thai==2 || $his->paid==1)
                             @else
                                 <form method="post" action="{{route('order.update_order',[$his->id])}}">
                                     @csrf

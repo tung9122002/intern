@@ -3,6 +3,34 @@
 @endphp
 @extends('templates.layout')
 @section('content')
+    <style>
+        .star-style {
+            background-repeat: no-repeat;
+            width: 115%;
+            height: 100%;
+            margin-left: -7px;
+        }
+        .rating {
+            position: absolute;
+            top: -1px;
+            left: 0;
+        }
+        .fa-star{
+            margin: 5px;
+            width: 20px;
+            height: 10px;
+        }
+        .star-vote   {
+            width: 100px;
+            height: 20px;
+            position: relative;
+            margin-right: 10px;
+            margin-left: 10px;
+        }
+        .single_capt_left{
+            font-size: 20px;
+        }
+    </style>
     <div id="main-wrapper">
 
         <!-- ============================================================== -->
@@ -37,14 +65,22 @@
                                 <div class="prt_02 mb-3">
                                     <h2 class="ft-bold mb-1">{{$loadOne->ten_sp}}</h2>
                                     <div class="text-left">
-                                        <div class="star-rating align-items-center d-flex justify-content-left mb-1 p-0">
-                                            <i class="fas fa-star filled"></i>
-                                            <i class="fas fa-star filled"></i>
-                                            <i class="fas fa-star filled"></i>
-                                            <i class="fas fa-star filled"></i>
-                                            <i class="fas fa-star"></i>
-                                            <span class="small">(412 Reviews)</span>
-                                        </div>
+
+                                      <div class="star-rating align-items-center d-flex justify-content-left mb-1 p-0">
+                                          @if($rating==null)
+                                              <span> Sản phẩm chưa có đánh giá</span>
+                                          @else
+                                              <span>{{(number_format($rating,1))}}/5 </span>
+                                              <div class="star-vote">
+                                                  <div class="star-style rating"
+                                                       style="background-image: url(https://meter.com.vn//static/imgs/5star1.png); width:{{($rating *100/5)+12}}%"></div>
+                                                  <div class="star-style star_background"
+                                                       style="background-image: url(https://meter.com.vn//static/imgs/5star2.png);"></div>
+                                              </div>
+
+                                              <span class="small">({{count($countRating)}} Đánh giá)</span>
+                                          @endif
+                                      </div>
                                         <div class="elis_rty"><span class="ft-medium text-muted line-through fs-md mr-2"></span>
                                                     <input type="text" id="price-att" hidden>
                                                     <span class="ft-bold theme-cl fs-lg mr-2" id="gia_sp">Liên hệ</span>
@@ -125,7 +161,103 @@
                 </div>
             </div>
         </section>
+{{--            {{dd($objUser = \Illuminate\Support\Facades\Auth::user())}}--}}
         <!-- ======================= Product Detail End ======================== -->
+            <section class="middle">
+                <div class="container">
+                    <div class="row align-items-center justify-content-center">
+                        <div class="col-xl-11 col-lg-12 col-md-12 col-sm-12">
+                            <ul class="nav nav-tabs b-0 d-flex align-items-center justify-content-center simple_tab_links mb-4" id="myTab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <a class="nav-link" href="#reviews" id="reviews-tab" data-toggle="tab" role="tab" aria-controls="reviews" aria-selected="false">Reviews</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" id="myTabContent">
+                                <!-- Reviews Content -->
+                                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                                    <div class="reviews_info">
+                                       @foreach($loadRatingId as $ratingId)
+                                            <div class="single_rev d-flex align-items-start br-bottom py-3">
+{{--                                                <div class="single_rev_thumb"><img src="assets/img/team-1.jpg" class="img-fluid circle" width="90" alt="" /></div>--}}
+                                                <div class="single_rev_caption d-flex align-items-start pl-3">
+                                                    <div class="single_capt_left">
+                                                        <h4 class="mb-0 fs-md ft-medium lh-1"><span style="color: red">Người gửi:</span> {{$ratingId->name}}</h4>
+                                                            <div class="star-rating align-items-center d-flex justify-content-left mb-1 p-0">
+                                                                @for($i=1;$i<=$ratingId->rating;$i++)
+                                                                    <i class="fas fa-star filled"></i>
+                                                                @endfor
+                                                        </div>
+                                                        <div style="border-bottom: 1px solid #cccccc;width: 1000px">
+                                                            <p style="color: red">Ngày gửi:<span class="small"> {{$ratingId->start_time}}</span></p>
+                                                            <p><span style="color: red">Nội dung:</span> {{$ratingId->description}}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                        <center>  <a href="{{route('list_rating',[$loadOne->id])}}" style="color: blue">Xem tất cả đánh giá</a></center>
+                                    </div>
+
+                                    <div class="reviews_rate">
+                                        <form class="row">
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                <h4>Gửi đánh giá</h4>
+                                            </div>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                <div class="revie_stars d-flex align-items-center justify-content-between px-2 py-2 gray rounded mb-2 mt-1">
+                                                    <div class="srt_013">
+                                                        <div class="submit-rating">
+                                                                <div class="d-flex">
+                                                                    @for($i=5;$i>=1;$i--)
+                                                                        <input class="rating" id="star-{{$i}}" type="radio" name="rating" value="{{$i}}" />
+                                                                        <label for="star-{{$i}}" title="">
+                                                                            <i class="active fa fa-star" aria-hidden="true"></i>
+                                                                        </label>
+                                                                    @endfor
+                                                                </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="srt_014">
+                                                        <h6 class="mb-0">{{number_format($rating,1)}} Star</h6>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="medium text-dark ft-medium">Name</label>
+                                                    <input id="name" value="{{Auth::user()->name??""}}" class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="medium text-dark ft-medium">Phone</label>
+                                                    <input id="phone" value="{{Auth::user()->sdt??""}}" class="form-control" />
+                                                </div>
+                                            </div>
+                                            <input id="user_id" value="{{\Illuminate\Support\Facades\Auth::user()->id??""}}" hidden>
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                <div class="form-group">
+                                                    <label class="medium text-dark ft-medium">Description</label>
+                                                    <textarea id="description" class="form-control"></textarea>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+                                                <div class="form-group m-0">
+                                                    <a id="btn-submit" data-product-id="{{$loadOne->id_product}}" data-url="{{route('add_rating')}}" class="btn btn-white stretched-link hover-black">Submit Review <i class="lni lni-arrow-right"></i></a>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         <!-- Product View Modal -->
         <div class="modal fade lg-modal" id="quickview" tabindex="-1" role="dialog" aria-labelledby="quickviewmodal" aria-hidden="true">
             <div class="modal-dialog modal-xl login-pop-form" role="document">
@@ -350,7 +482,7 @@
                                                 <p class="mb-2"><span class="text-dark ft-medium small">Size: {{$item['size']}}</span><br>
                                                     <span class="text-dark small">Màu sắc: {{$item['color']}}</span></p>
                                                 <h4 class="fs-md ft-medium mb-0 lh-1">Số lượng: {{$item['so_luong']}}</h4>
-                                                <h4 class="fs-md ft-medium mb-0 lh-1">Giá: {{$item['gia_thitruong']}}$</h4>
+                                                <h4 class="fs-md ft-medium mb-0 lh-1">Giá: {{number_format($item['gia_thitruong'])}} VNĐ</h4>
                                             </div>
                                         </div>
                                         <div class="fls_last"><button class="close_slide gray"><i class="ti-close"></i></button></div>
@@ -450,7 +582,7 @@
             const giaSp=$('#gia_sp').val()
             const elementParent=$(this).parent().parent().parent().parent().parent();
             const checkColor=elementParent.find('.color:checked')
-            console.log(sizeId,urlPrice,productId,checkColor.val());
+            console.log(sizeId,productId,checkColor.val());
             if (checkColor){
                 $.ajax({
                     type:'GET',
@@ -461,7 +593,8 @@
                         id_product:productId
                     },
                     success:function (res){
-                        console.log(res.html)
+                        const test=res.html
+                        console.log(test.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1."))
                         if (res.html==null) {
                             $('#inventory-att').val(res.inventory=0)
                             $('#price-att').val(res.html=null)
@@ -482,7 +615,7 @@
                             }
                             $('#inventory-att').val(res.inventory)
                             $('#price-att').val(res.html)
-                            $('#gia_sp').html(res.html + '$')
+                            $('#gia_sp').html(res.html.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + 'VNĐ')
                         }
                     }
                 })
@@ -491,6 +624,7 @@
         $(document).on('change','.color',function (event) {
             const urlColor=$(this).data('url_color')
             const colorId=$(this).val()
+            const giaSp=$('#gia_sp').val()
             const productId=$(this).data('id_product')
             const elementParent=$(this).parent().parent().parent().parent().parent();
             const checkColor=elementParent.find('.color:checked')
@@ -527,11 +661,45 @@
                             }
                                 $('#inventory-att').val(res.inventory)
                                 $('#price-att').val(res.html)
-                                $('#gia_sp').html(res.html + '$')
+                                $('#gia_sp').html(res.html.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.") + 'VNĐ')
                         }
                     }
                 })
             }
+        })
+        $(document).on('click','#btn-submit',function (event) {
+            event.preventDefault();
+            const productId=$(this).data('product-id')
+            const url=$(this).data('url')
+            const description=$('#description').val()
+            const star=$('.rating:checked').val()
+            const name=$('#name').val()
+            const phone=$('#phone').val()
+            const userId=$('#user_id').val()
+
+            console.log(productId,url,description,star)
+            $.ajax({
+                url:url,
+                type:'GET',
+                data:{
+                    product_id:productId,
+                    description:description,
+                    rating:star,
+                    name:name,
+                    phone:phone,
+                    user_id:userId,
+                },
+                success:function (res) {
+                        console.log(res)
+                        alert('Gửi đánh giá thành công!')
+                        window.setTimeout(function(){location.reload()},500)
+                },
+                error:function (res) {
+                    alert('Bạn chưa nhập đầy đủ thông tin!')
+                    console.log('Lỗi')
+                }
+            })
+
         })
     }
     )

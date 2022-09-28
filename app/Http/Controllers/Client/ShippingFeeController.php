@@ -22,14 +22,14 @@ class ShippingFeeController extends Controller
             session()->put('fee',$shipping->fee);
             $total = $subtotal + $shipping->fee;
             session()->put('total', $total);
-            return response()->json(array('success' => true, 'shippingFee'=>$shipping->fee,'total'=>$total));
+            return response()->json(array('success' => true, 'shippingFee'=>number_format($shipping->fee),'total'=>number_format($total)));
         }
         else {
             $shipping=0;
             $total = $subtotal + $shipping;
             session()->put('total', $total);
             session()->forget('fee');
-            return response()->json(array('success' => true, 'shippingFee'=>$shipping,'total'=>$total));
+            return response()->json(array('success' => true, 'shippingFee'=>number_format($shipping),'total'=>number_format($total)));
         }
     }
 }

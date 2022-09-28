@@ -10,7 +10,7 @@ class Order extends Model
 {
     use HasFactory;
     protected $table='order';
-    protected $fillable=['color','size','coupon_number','order_item.coupon_id','order.trang_thai','order_item.total_pr','customer.email','quantity','gia_thitruong','location_district.name_district','location_province.name_province','customer.address','customer.province_id','customer.district_id','total','order.order_id','order.id','customer.name','product_id','total','order.created_at','order.updated_at','quanly_sp.ten_sp','order_item.customer_id'];
+    protected $fillable=['order_item.paid','order_item.code_order','color','size','coupon_number','order_item.coupon_id','order.trang_thai','order_item.total_pr','customer.email','quantity','gia_thitruong','location_district.name_district','location_province.name_province','customer.address','customer.province_id','customer.district_id','total','order.order_id','order_item.id','customer.name','product_id','total','order.created_at','order.updated_at','quanly_sp.ten_sp','order_item.customer_id'];
     public function loadList(){
         $query=DB::table('order')
         ->join('quanly_sp','quanly_sp.id','=','order.product_id')
@@ -91,7 +91,7 @@ class Order extends Model
             ->join('location_district','location_district.id','=','customer.district_id')
             ->where('id_user',$id)
             ->groupBy('order.order_id')
-            ->select('order.created_at','customer.name','customer.email','customer.address','location_district.name_district','location_province.name_province','order.trang_thai','order.order_id','order.id'
+            ->select('order_item.paid','order.created_at','customer.name','customer.email','customer.address','location_district.name_district','location_province.name_province','order.trang_thai','order.order_id','order.id'
                 ,DB::raw('SUM(order.total) as total')
                 ,DB::raw('SUM(order.quantity) as quantity')
             )
@@ -99,6 +99,17 @@ class Order extends Model
                 ->orderBy('created_at','DESC')
             ->get();
 //        dd($query);
+        return $query;
+    }
+    public function completeOrder($code){
+        $query=DB::table('order_item')
+            ->join('customer','customer.id','=','order_item.customer_id')
+            ->join('order','order.order_id','=','order_item.id')
+            ->join('location_province','location_province.id','=','customer.province_id')
+            ->join('location_district','location_district.id','=','customer.district_id')
+            ->where('code_order',$code)
+            ->select('order_item.id','name','customer_id','total_pr','code_order','email','phone','customer.address','location_district.name_district','location_province.name_province')
+            ->first();
         return $query;
     }
 

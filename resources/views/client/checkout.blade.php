@@ -67,7 +67,7 @@
 
                 <div class="row justify-content-between">
                     <div class="col-12 col-lg-7 col-md-12">
-                        <form method="POST">
+                        <form method="POST" id="payment">
                             @csrf
                             <h5 class="mb-4 ft-medium">Billing Details</h5>
                             <div class="row mb-2">
@@ -75,7 +75,7 @@
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                     <div class="form-group">
                                         <label class="text-dark">Name *</label>
-                                        <input type="text" name="name" value="{{Auth::user()->name??""}}" class="form-control" placeholder="First Name" />
+                                        <input type="text" id="name" name="name" value="{{Auth::user()->name??""}}" class="form-control" placeholder="First Name" />
                                         @error('name')
                                             <div class="text-danger">{{$message}}</div>
                                         @enderror
@@ -124,7 +124,6 @@
                                         @enderror
                                     </div>
                                 </div>
-
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                     <div class="form-group">
                                         <label class="text-dark">Phone *</label>
@@ -145,12 +144,6 @@
                             </div>
                             <div class="form-group">
                                 <button type="submit" class="btn btn-dark btm-md full-width">Pay</button>
-                            </div>
-                        </form>
-                        <form action="{{route('payment')}}" method="post">
-                            @csrf
-                            <div class="form-group">
-                                <button type="submit" name="redirect" class="btn btn-dark btm-md full-width">Thanh Toán VNPAY</button>
                             </div>
                         </form>
                     </div>
@@ -175,7 +168,7 @@
                                                     <p class="mb-3 lh-1"><span class="text-dark">Size: {{$item['size']}}</span></p>
                                                     <p class="mb-1 lh-1"><span class="text-dark">Số lượng: {{$item['so_luong']}}</span></p>
 
-                                                    <h4 class="fs-md ft-medium mb-3 lh-1">{{$item['gia_thitruong']}}$</h4>
+                                                    <h4 class="fs-md ft-medium mb-3 lh-1">{{number_format($item['gia_thitruong'])}} VNĐ</h4>
                                                 </div>
                                             </div>
                                             <div class="fls-last">
@@ -199,10 +192,10 @@
 {{--                                        <span>Phí Ship</span> <span class="ml-auto text-dark ft-medium">{{$total}}$</span>--}}
                                     </li>
                                     <li class="list-group-item d-flex text-dark fs-sm ft-regular">
-                                        <span>Subtotal</span> <span class="ml-auto text-dark ft-medium">{{$total}}$</span>
+                                        <span>Subtotal</span> <span class="ml-auto text-dark ft-medium">{{number_format($total)}} VNĐ</span>
                                     </li>
                                     <li class="list-group-item d-flex text-dark fs-sm ft-regular">
-                                        <span>Coupon</span> <span id="coupon" class="ml-auto text-dark ft-medium">0$</span>
+                                        <span>Coupon</span> <span id="coupon" class="ml-auto text-dark ft-medium">0 VNĐ</span>
                                     </li>
                                     <li class="list-group-item d-flex text-dark fs-sm ft-regular">
                                         <span>Total</span> <span class="ml-auto text-dark ft-medium" id="total" ></span>
@@ -309,7 +302,7 @@
                                         <p class="mb-2"><span class="text-dark ft-medium small"></span><span class="text-dark small">Size: {{$it['size']}}</span></p>
 
                                         <p class="mb-2"><span class="text-dark ft-medium small"></span><span class="text-dark small">Số lượng: {{$it['so_luong']}}</span></p>
-                                        <h4 class="fs-md ft-medium mb-0 lh-1">Giá: {{$it['gia_thitruong']}}$</h4>
+                                        <h4 class="fs-md ft-medium mb-0 lh-1">Giá: {{number_format($it['gia_thitruong'])}} VNĐ</h4>
                                     </div>
                                 </div>
                                 <div class="fls_last"><a href="{{route('deleteCart',[$it['id']])}}"><i class="ti-close"></i></a></div>
@@ -319,7 +312,7 @@
 
                     <div class="d-flex align-items-center justify-content-between br-top br-bottom px-3 py-3">
                         <h6 class="mb-0">Tổng</h6>
-                        <h3 class="mb-0 ft-medium">{{$total}}$</h3>
+                        <h3 class="mb-0 ft-medium">{{number_format($total)}} VNĐ</h3>
                     </div>
 
                     <div class="cart_action px-3 py-3">
@@ -360,6 +353,7 @@
                 })
                 $(document).on('change','#province_id',function (event) {
                     let total=$('#total');
+                    let totalPayment=$('.total-payment');
                     const url_shipping=$(this).data('shipping')
                     const dataShip={province_id: $(this).val(),}
                     const shipping_id = $('#shipping_id').val();
@@ -368,14 +362,16 @@
                         url:url_shipping,
                         data:dataShip,
                         success:function (res) {
+                            totalPayment.val(res.total);
                             console.log(res);
-                                total.html(res.total+'$');
-                            $('#shipping_id').html(res.shippingFee+'$');
+                                total.html(res.total+'VNĐ');
+                            $('#shipping_id').html(res.shippingFee+'VNĐ');
                         }
                     })
                 })
                 $(document).on('click','#btn-coupon',function (event) {
                     let total=$('#total');
+                    let totalPayment=$('.total-payment');
                     let coupon=$('#coupon');
                     const urlCoupon=$('#btn-coupon').data('urlcoupon')
                     let dataCoupon=$('#coupon_code').val()
@@ -387,17 +383,18 @@
                             coupon_code:dataCoupon
                         },
                         success:function (res) {
+                            console.log(res)
                             if (dataCoupon=true){
-                                coupon.html(res.html['coupon_number']+'$');
-                                total.html(res.subtotal+'$')
+                                totalPayment.val(res.subtotal);
+                                coupon.html(res.html['coupon_number']+'VNĐ');
+                                total.html(res.subtotal+'VNĐ')
                                 console.log(res.html);
                                 alert('Bạn đã được giảm giá!')
                             }
-
                             else {
                                 alert('Mã coupon không đúng hoặc chưa nhập!')
-                                coupon.html(res.html+'0$');
-                                total.html(res.subtotal+'$')
+                                coupon.html(res.html+'0 VNĐ');
+                                total.html(res.subtotal+'VNĐ')
                                 console.log(res.html);
                             }
                         },
@@ -406,6 +403,11 @@
                         }
                     })
                 })
+                // $(document).on('click','#btn-payment',function (e) {
+                //     e.preventDefault();
+                //     const name=$('#name').val();
+                //     console.log(name)
+                // })
                 }
 
             )

@@ -55,10 +55,16 @@ Route::get('detailOrder/{id}',[\App\Http\Controllers\Client\OrderController::cla
 
 // Client - Detail Poduct
 Route::get('shop-single/{id}',[\App\Http\Controllers\Client\ProductController::class,'shopSingle'])->name('shopSingle');
+Route::get('add-rating',[\App\Http\Controllers\Client\ProductController::class,'addRating'])->name('add_rating');
 // Client - Coupon
 Route::get('check-coupon',[\App\Http\Controllers\Client\CouponController::class,'checkCoupon'])->name('check_coupon');
 
+//client- rating
+Route::get('rating/{id}',[\App\Http\Controllers\Client\RatingController::class,'listRating'])->name('list_rating');
 
+Route::get('complete-order/{code}',[\App\Http\Controllers\Client\CheckOutController::class,'completeOrder'])->name('complete_order');
+Route::get('IPN',[\App\Http\Controllers\Payment\PaymentController::class,'IPN'])->name('complete_pay');
+Route::get('vnp-return',[\App\Http\Controllers\Payment\PaymentController::class,'resultPay'])->name('result_pay');
 //admin categories
 Route::prefix('danhmuc')->name('danhmuc.')->group(function(){
     Route::get('/',[\App\Http\Controllers\Admin\CategoryController::class,'index'])->name('index');
@@ -85,12 +91,10 @@ Route::prefix('sanpham')->name('sanpham.')->group(function(){
     Route::get('update-product-inventory',[\App\Http\Controllers\Admin\ProductController::class,'updateProductInventory']);
     Route::post('update-product-status/{id}',[\App\Http\Controllers\Admin\ProductController::class,'updateProductStatus'])->name('update-product-status');
 });
-
 //admin user
 Route::prefix('user')->name('user.')->group(function(){
     Route::get('/',[\App\Http\Controllers\Admin\UserController::class,'index'])->name('index');
 });
-
 //admin customer
 Route::prefix('khach-hang')->name('khach-hang.')->group(function(){
     Route::get('/',[\App\Http\Controllers\Admin\CustomerController::class,'index'])->name('index');
@@ -143,4 +147,4 @@ Route::prefix('attribute')->name('attribute.')->group(function (){
 
 //thanh toán VNPAY
 Route::get('payment',[\App\Http\Controllers\Payment\PaymentController::class,'payment'])->name('getPayment');
-Route::post('vnp_payment',[\App\Http\Controllers\Payment\PaymentController::class,'vnpPayment'])->name('payment');
+Route::post('vnp_payment/{code}',[\App\Http\Controllers\Payment\PaymentController::class,'vnpPayment'])->name('payment');

@@ -136,6 +136,7 @@ class ProductController extends Controller
         }
         return $result;
     }
+
     public function detail($id){
 //        $total=0;
         $title='Chi tiết sp';
@@ -149,6 +150,7 @@ class ProductController extends Controller
 //        dd($loadName);
         return view('sanpham.detail',compact('loadName','listAtt','productDetail','title','listColor','listSize'));
     }
+
     public function detailUpdate($id,Request $request){
         $colors=$request->colors;
         $sizes=$request->sizes;
@@ -188,6 +190,7 @@ class ProductController extends Controller
 
         return redirect()->back();
     }
+
     public function updateProductPrice(Request $request){
         $id_product=$request->id_product;
         $id_attribute=$request->id_attribute;
@@ -272,7 +275,7 @@ class ProductController extends Controller
     public function loadAttribute(Request $request){
         $objAtt=new ProductAttribute();
         $att=$objAtt->pricePro($request->colorId.'~'.$request->sizeId,$request->id_product);
-//        dd($att);
-        return response()->json(array('success' => true, 'html' => $att->price,'inventory'=>$att->inventory));
+//        dd(number_format($att->price));
+        return response()->json(array('success' => true, 'html' =>($att->price),'inventory'=>$att->inventory));
     }
 }

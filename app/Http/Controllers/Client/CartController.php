@@ -36,7 +36,7 @@ class CartController extends Controller
         // nếu sp chưa có trong giỏ hàng
         else{
             $cart[$id.$color.$size]=[
-                'id'=>$request->id,
+                'id'=>$id,
                 'ten_sp'=>$request->ten_sp,
                 'so_luong'=>$request->quantity,
                 'gia_thitruong'=>$request->price,

@@ -24,7 +24,7 @@ class CheckOutController extends Controller
         $cart=session()->get('showCart');
         if(!empty($cart)){
             foreach($cart as $it){
-                $subtotal=($it['gia_thitruong']*$it['so_luong']);
+                $subtotal=((int)$it['gia_thitruong']*(int)  $it['so_luong']);
                 $total=($total+$subtotal);
             }
         }
@@ -45,17 +45,17 @@ class CheckOutController extends Controller
         $objSp=new Customer();
         $query=$objSp->add($params);
         $cart=session()->get('showCart');
-//        dd($cart);
+        $codeOrder=time();
         if (empty($cou['coupon_id'])){
 //            dd(null);
             $orderItem=new Order();
-            $orderId=$orderItem->addOrderItem(['customer_id'=>$query,'total_pr'=>session()->get('total'),'coupon_id'=>$cou['coupon_id']=null]);
+            $orderId=$orderItem->addOrderItem(['customer_id'=>$query,'total_pr'=>session()->get('total'),'coupon_id'=>$cou['coupon_id']=null,'code_order'=>$codeOrder]);
             $tal=session()->get('total');
         }
         else {
 //            dd(1);
             $orderItem = new Order();
-            $orderId = $orderItem->addOrderItem(['customer_id' => $query, 'total_pr' => session()->get('total')-$cou['coupon_number'], 'coupon_id' => $cou['coupon_id']]);
+            $orderId = $orderItem->addOrderItem(['customer_id' => $query, 'total_pr' => session()->get('total')-$cou['coupon_number'], 'coupon_id' => $cou['coupon_id'],'code_order'=>$codeOrder]);
 //         dd($orderId);
             $tal=session()->get('total')-$cou['coupon_number'];
         }
@@ -66,11 +66,11 @@ class CheckOutController extends Controller
         }
         else {
             foreach ($cart as $key => $item) {
-                $subtotal = ($item['gia_thitruong'] * $item['so_luong']);
+                $subtotal = ((int)$item['gia_thitruong'] * (int)$item['so_luong']);
                 $total = ($total + $subtotal);
                 $data[] = [
                     'order_id' => $orderId,
-                    'product_id' => $key,
+                    'product_id' => $item['id'],
                     'total' => $subtotal,
                     'quantity' => $item['so_luong'],
                     'color' => $item['color'],
@@ -95,13 +95,21 @@ class CheckOutController extends Controller
 //         ];
         }
         $order=$orderItem->addOrder($data);
-        Mail::to($params['email'])->send(new MailNotify([
-            'order'=>$params,
-            'cart'=>$cart,
-            'order_id'=>$orderId,
-            'total_pr'=>$tal,
-        ]));
+//        Mail::to($params['email'])->send(new MailNotify([
+//            'order'=>$params,
+//            'cart'=>$cart,
+//            'order_id'=>$orderId,
+//            'total_pr'=>$tal,
+//        ]));
         session()->forget('showCart','total');
-        return redirect()->route('listCart');
+        return redirect()->route('complete_order',[$codeOrder]);
     }
+    public function completeOrder(Request $request,$code){
+        $obj=new Order();
+        $data=$obj->completeOrder($code);
+//        dd($data);
+        $title='Đặt hàng thành công';
+        return view('client.complete-order',compact('title','code','data'));
+    }
+
 }

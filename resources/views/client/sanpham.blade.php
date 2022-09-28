@@ -552,7 +552,7 @@
                                         <p class="mb-2"><span class="text-dark ft-medium small"></span>Màu sắc: <span class="text-dark small" style="background-color: {{$item['color']}}">{{$item['color']}}</span></p>
                                         <p class="mb-2"><span class="text-dark ft-medium small"></span><span class="text-dark small">Size: {{$item['size']}}</span></p>
                                         <p class="mb-2"><span class="text-dark ft-medium small"></span><span class="text-dark small">Số lượng: {{$item['so_luong']}}</span></p>
-                                        <h4 class="fs-md ft-medium mb-0 lh-1">Giá: {{$item['gia_thitruong']}}$</h4>
+                                        <h4 class="fs-md ft-medium mb-0 lh-1">Giá: {{number_format(($item['gia_thitruong']))}} VNĐ</h4>
                                     </div>
                                 </div>
 

@@ -28,7 +28,7 @@
                     </div>
                 </div>
             </div><br>
-{{--            {{dd($detailOrder[0]->id)}}--}}
+{{--            {{dd($detailOrder[0])}}--}}
             {{--            <p>The .table class adds basic styling (light padding and only horizontal dividers) to a table:</p>--}}
 {{--            <h5>Địa chỉ nhận hàng</h5>--}}
 {{--            @foreach(array($detailOrder) as $detail)--}}
@@ -63,20 +63,27 @@
                 </tbody>
             </table>
         </div>
-        <h5 style="color: red;text-align: right;margin-right: 400px"> Shipping fee: {{$detailOrder[0]->total_pr+$detailOrder[0]->coupon_number-$tongtien}}$</h5><br>
-        <h5 style="color: red;text-align: right;margin-right: 400px"> SubTotal: {{($tongtien)}}$</h5><br>
+        <h5 style="color: red;text-align: right;margin-right: 400px"> Shipping fee: {{$detailOrder[0]->total_pr+$detailOrder[0]->coupon_number-$tongtien}} VNĐ</h5><br>
+        <h5 style="color: red;text-align: right;margin-right: 400px"> SubTotal: {{($tongtien)}} VNĐ</h5><br>
         @if($detailOrder[0]->coupon_id!=null)
-            <h5 style="color: #ff0000;text-align: right;margin-right: 400px"> Coupon: {{($detailOrder[0]->coupon_number)}}$</h5><br>
+            <h5 style="color: #ff0000;text-align: right;margin-right: 400px"> Coupon: {{($detailOrder[0]->coupon_number)}} VNĐ</h5><br>
         @else
-            <h5 style="color: #ff0000;text-align: right;margin-right: 400px"> Coupon: 0$</h5><br>
+            <h5 style="color: #ff0000;text-align: right;margin-right: 400px"> Coupon: 0 VNĐ</h5><br>
         @endif
-        <h4 style="color: red;text-align: right;margin-right: 400px"> Total: {{$detailOrder[0]->total_pr}}$</h4><br>
-            <form method="POST" action="{{url('vnp_payment')}}">
+        <h4 style="color: red;text-align: right;margin-right: 400px"> Total: {{$detailOrder[0]->total_pr}} VNĐ</h4><br>
+          @if($detailOrder[0]->paid==0)
+            <form method="POST" action="{{url('vnp_payment',[$detailOrder[0]->code_order])}}">
                 @csrf
+                <input type="text" name="paid" value="{{$detailOrder[0]->paid}}" hidden>
+                <input type="text" name="total_pr" value="{{$detailOrder[0]->total_pr}}" hidden>
+                <input type="text" name="code_order" value="{{$detailOrder[0]->code_order}}" hidden>
+                <input type="text" name="id" value="{{$detailOrder[0]->id}}" hidden>
                 <div class="form-group">
                     <button style="width: 400px; margin-left: 60%" name="redirect" type="submit" class="btn btn-dark btm-md full-width btn btn-info">Thanh Toán VNPAY</button>
                 </div>
             </form>
+        @else
+        @endif
 
     </section>
     <!-- ======================= Product Detail End ======================== -->
